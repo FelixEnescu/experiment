@@ -1,0 +1,46 @@
+
+version: '2'
+
+services:
+    redis:
+        image: redis
+
+    worker1:
+        build: .
+        command: [ celery, worker, -A, server.celery_app, --loglevel=debug, --concurrency, '2' ]
+        environment:
+            C_FORCE_ROOT: ALLOW
+        volumes:
+            - .:/experiment
+        depends_on:
+            - redis
+        links:
+            - redis
+
+    worker2:
+        build: .
+        command: [ celery, worker, -A, server.celery_app, --loglevel=debug, --concurrency, '2' ]
+        environment:
+            C_FORCE_ROOT: ALLOW
+        volumes:
+            - .:/experiment
+        depends_on:
+            - redis
+        links:
+            - redis
+
+    grpc:
+        build: .
+        command: [ python, server.py ]
+        ports:
+            - "50051:50051"
+        volumes:
+            - .:/experiment
+        depends_on:
+            - redis
+            - worker1
+            - worker2
+        links:
+            - redis
+
+

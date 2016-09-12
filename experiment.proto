@@ -1,0 +1,29 @@
+
+
+syntax = "proto3";
+
+package experiment;
+
+// The Experiment service definition.
+service ExperimentService {
+  // Sends a greeting
+  rpc StartExperiment (Experiment) returns (ExperimentStatus) {}
+  rpc StopExperiment (Experiment) returns (ExperimentStatus) {}
+  rpc GetExperimentStatus (ExperimentId) returns (ExperimentStatus) {}
+}
+
+// The request message containing the experiment's data.
+message Experiment {
+  string id = 1;    // unique id for each experiment
+  string name = 2;
+}
+
+// The request message containing just the experiment's id.
+message ExperimentId {
+  string id = 1;    // unique id for each experiment
+}
+
+// The response message containing the status of experiment
+message ExperimentStatus {
+  string status = 1;
+}
